@@ -5,6 +5,10 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
@@ -131,6 +135,10 @@ public class Ventana extends JFrame {
 				cadena = campoCadena.getText()+' ';
 				cadenaArray = cadena.split("");
 				
+				for(int i =0;i<cadenaArray.length;i++) {
+					System.out.println(cadenaArray[i]);
+				}
+				
 				
 				//
 				if(cadena.isEmpty()) {
@@ -223,15 +231,20 @@ fin modo aguila*/
 public void Scanner() {
 	
 	tam=cadenaArray.length;
-	
+	char aux=' ';
 	do {
+		aux=car;
 		car=cadenaArray[cont].charAt(0);
 		
 		if(car==' ') {
-			elementArray[elemento] = lex;
 			
-			elemento++;
-			lex="";
+			if(aux==' ') {
+				lex="";
+			}else if(aux!=' ' || cont<tam){
+				elementArray[elemento] = lex;
+				elemento++;
+				lex="";
+			}
 		}else {
 			lex=lex+car;
 		}
@@ -267,7 +280,7 @@ Reglas 300
 	
 	do {
 
-		System.out.println(vueltas);
+		
 		if(elementArray[vueltas].equals("+")) {
 			
 			String Numero=String.valueOf(No);
@@ -378,6 +391,7 @@ Reglas 300
 			String Linea=String.valueOf(linea);
 			String identificador=String.valueOf(id+1);
 			id=id+1;
+			SalidaId(elementArray[vueltas],identificador,Linea);
 			Salida(Numero,Linea,elementArray[vueltas],"1",identificador);
 		}else if(estado==7){
 		
@@ -385,6 +399,7 @@ Reglas 300
 			String Linea=String.valueOf(linea);
 			String consta=String.valueOf(constante+1);
 			constante=constante+1;
+			SalidaConst(elementArray[vueltas],consta,Linea);
 			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
 		}else if(estado==10){
 		
@@ -392,6 +407,7 @@ Reglas 300
 			String Linea=String.valueOf(linea);
 			String consta=String.valueOf(constante+1);
 			constante=constante+1;
+			SalidaConst(elementArray[vueltas],consta,Linea);
 			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
 		}else if(estado==12 ){
 		
@@ -399,11 +415,20 @@ Reglas 300
 			String Linea=String.valueOf(linea);
 			String consta=String.valueOf(constante+1);
 			constante=constante+1;
+			SalidaConst(elementArray[vueltas],consta,Linea);
 			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
 		}else if(estado==19){
-			resultado.setText("Cadena no Válida");
+			String Numero=String.valueOf(No);
+			String Linea=String.valueOf(linea);
+			String consta=String.valueOf(constante+1);
+			String novalido=elementArray[vueltas];
+			resultado.setText("Error en la linea: "+Linea+" "+novalido+" no es válida");
 		}else {
-			resultado.setText("Cadena no Válida");
+			String Numero=String.valueOf(No);
+			String Linea=String.valueOf(linea);
+			String consta=String.valueOf(constante+1);
+			String novalido=elementArray[vueltas];
+			resultado.setText("Error en la linea: "+Linea+" "+novalido+" no es válida");
 		}
 		flagExpo=false;
 		flagCorreo=false;
@@ -414,6 +439,92 @@ Reglas 300
 		carMatriz=0;
 	}
 	
+	public void SalidaId(String token, String valor, String linea) {
+		tablaSalidaId arrayObjetosid[]=new tablaSalidaId[4];
+		 
+        //Creamos objetos en cada posicion
+		arrayObjetosid[0]=new tablaSalidaId(token,valor,linea);
+        
+   
+        System.out.println("Identificador "+arrayObjetosid[0].getToken()+" "+"Valor: "+ arrayObjetosid[0].getValor()+" "+"linea: "+arrayObjetosid[0].getLinea());
+        
+	
+	}
+	public class tablaSalidaId{
+		private String token;
+		private String valor;
+	    private String linea;
+	    public String getToken() {
+			return token;
+		}
+		public void setToken(String token) {
+			this.token = token;
+		}
+		public String getValor() {
+			return valor;
+		}
+		public void setValor(String valor) {
+			this.valor = valor;
+		}
+		public String getLinea() {
+			return linea;
+		}
+		public void setLinea(String linea) {
+			this.linea = linea;
+		}
+		
+		public tablaSalidaId(String token, String valor, String linea) {
+			this.token = token;
+	        this.valor = valor;
+	        this.linea = linea;
+	      
+	       
+		} 
+	    
+	}
+	public void SalidaConst(String token, String valor, String linea){
+		tablaSalidaConst arrayObjetosConst[]=new tablaSalidaConst[4];
+		 
+        //Creamos objetos en cada posicion
+		arrayObjetosConst[0]=new tablaSalidaConst(token,valor,linea);
+        
+   
+        System.out.println("Constante "+arrayObjetosConst[0].getToken()+" "+"Valor: "+ arrayObjetosConst[0].getValor()+" "+"linea: "+arrayObjetosConst[0].getLinea());
+        
+	}
+	public class tablaSalidaConst{
+		private String token;
+		private String valor;
+	    private String linea;
+	    public String getToken() {
+			return token;
+		}
+		public void setToken(String token) {
+			this.token = token;
+		}
+		public String getValor() {
+			return valor;
+		}
+		public void setValor(String valor) {
+			this.valor = valor;
+		}
+		public String getLinea() {
+			return linea;
+		}
+		public void setLinea(String linea) {
+			this.linea = linea;
+		}
+		
+	    
+	    public tablaSalidaConst(String token, String valor, String linea) {
+			this.token = token;
+	        this.valor = valor;
+	        this.linea = linea;
+	      
+	       
+		} 
+	    
+	}
 	public void Salida(String No, String linea, String token, String tipo, String codigo){
 		//Creamos un array de objetos de la clase empleados
         Tabla arrayObjetos[]=new Tabla[3];
@@ -423,7 +534,7 @@ Reglas 300
         
    
         System.out.println("No. "+arrayObjetos[0].getNo()+" "+"Linea: "+arrayObjetos[0].getLinea()+" "+"Token: "+ arrayObjetos[0].getToken()+" "+"Tipo: "+arrayObjetos[0].getTipo()+" "+"Codigo: "+arrayObjetos[0].getCodigo());
-      
+        
 	}
 	
 	public class Tabla {
@@ -485,62 +596,5 @@ Reglas 300
 		  
 		}
 	
-/*	public class TablaSalida
-	{
-	    // Atributos de la clase Persona
-	    private int No;
-	    private int linea;
-	    private String token;
-	    private String tipo;
-	    private String codigo;
 
-	    // Métodos de la clase Persona
-	    public int getNo()
-	    {
-	        return No;
-	    }
-
-	    public int getLinea()
-	    {
-	        return linea;
-	    }
-	    
-	    public String getToken()
-	    {
-	        return token;
-	    }
-	    
-	    public String getTipo()
-	    {
-	        return tipo;
-	    }
-	    
-	    public String getCodigo()
-	    {
-	        return codigo;
-	    }
-
-		public void setNo(int no) {
-			No = no;
-		}
-
-		public void setLinea(int linea) {
-			this.linea = linea;
-		}
-
-		public void setToken(String token) {
-			this.token = token;
-		}
-
-		public void setTipo(String tipo) {
-			this.tipo = tipo;
-		}
-
-		public void setCodigo(String codigo) {
-			this.codigo = codigo;
-		}
-	    
-	}
-*/
-	
 }
