@@ -1,5 +1,7 @@
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -16,8 +18,11 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 
 class MainPanel extends JPanel{
@@ -31,15 +36,20 @@ public void paintComponent(Graphics g){
 }
 
 public class Ventana extends JFrame {
+	JTable tablaLexica = new JTable(new DefaultTableModel(new Object[]{"No.", "Línea","TOKEN","Tipo","Código"}, 0));
+	JTable tablaId = new JTable(new DefaultTableModel(new Object[]{"Identificadores", "Valor","Linea"}, 0));
+	JTable tablaConst = new JTable(new DefaultTableModel(new Object[]{"Constantes", "Valor","Linea"}, 0));
 	boolean fondo=false;
 	JPanel app=new MainPanel();
 	JLabel resultado=new JLabel();
 	String[] cadenaArray;
-	String[] elementArray = new String[50];
+	String[] elementArray = new String[99];
+	String[][]datosLex=new String[5][100];
 	String cadena;
 	String campo;
 	String lex="";
 	char car=' ';
+	boolean tablaCreada=false;
 	boolean flagExpo=false;
 	boolean flagCorreo=false;
 	int auxEstado;
@@ -68,31 +78,32 @@ public class Ventana extends JFrame {
 	 cualquiera 10
 	 */
 	
-	int [][] tabla ={{ 1, 7, 3,19,19,19,19,19,19, 8,19},
-					 { 1, 1,19,19,19, 2,18,14,19,19,19},
-					 { 1, 1,19,19,19,19,19,19,19,19,19},
-					 {19,19,19, 4,19,19,19,19,19,19,19},
-					 { 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4},
-					 {19,19, 6,19,19,19,19,19,19,19,19},
-					 {19,19,19,19,19,19,19,19,19,19,19},
-					 {19, 7,19,19,19,19, 9,19,11,19,19},
-					 {19, 7,19,19,19,19,19,19,19,19,19},
-					 {19,10,19,19,19,19,19,19,19,19,19},
-					 {19,10,19,19,19,19,19,19,11,19,19},
-					 {19,12,19,19,19,19,19,19,19,13,19},
-					 {19,12,19,19,19,19,19,19,19,19,19},
-					 {19,12,19,19,19,19,19,19,19,19,19},
-					 {15,19,19,19,19,19,19,19,19,19,19},
-					 {15,19,19,19,19,19,16,19,19,19,19},
-					 {17,19,19,19,19,19,19,19,19,19,19},
-					 {17,19,19,19,19,19,19,19,19,19,19},
-					 { 1, 1,19,19,19,19,19,19,19,19,19},
+	int [][] tabla ={{ 1, 7, 3,19,19,19,19,19,19, 8,20},
+					 { 1, 1,19,19,19, 2,18,14,19,19,20},
+					 { 1, 1,19,19,19,19,19,19,19,19,20},
+					 {19,19,19, 4,19,19,19,19,19,19,20},
+					 { 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 20},
+					 {19,19, 6,19,19,19,19,19,19,19,20},
+					 {19,19,19,19,19,19,19,19,19,19,20},
+					 {19, 7,19,19,19,19, 9,19,11,19,20},
+					 {19, 7,19,19,19,19,19,19,19,19,20},
+					 {19,10,19,19,19,19,19,19,19,19,20},
+					 {19,10,19,19,19,19,19,19,11,19,20},
+					 {19,12,19,19,19,19,19,19,19,13,20},
+					 {19,12,19,19,19,19,19,19,19,19,20},
+					 {19,12,19,19,19,19,19,19,19,19,20},
+					 {15,19,19,19,19,19,19,19,19,19,20},
+					 {15,19,19,19,19,19,16,19,19,19,20},
+					 {17,19,19,19,19,19,19,19,19,19,20},
+					 {17,19,19,19,19,19,19,19,19,19,20},
+					 { 1, 1,19,19,19,19,19,19,19,19,20},
+					 {19,19,19,19,19,19,19,19,19,19,20},
 					 {19,19,19,19,19,19,19,19,19,19,19}};
 	public Ventana() {
 
 	////Visual
 		setVisible(true);
-		setTitle("Escaner Francisco Sánchez y Omar Verdugo");
+		setTitle("Escaer Jose Morales, Francisco Sánchez y Omar Verdugo");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocation(0,0);
 		setSize(1200,600);
@@ -113,17 +124,17 @@ public class Ventana extends JFrame {
 		instruccion.setForeground(Color.white);
 		app.add(instruccion);
 		
-		resultado.setBounds(420, 380, 400, 200);
+		resultado.setBounds(200, 380, 800, 200);
 		resultado.setForeground(Color.WHITE);
 		font(resultado,"Arial",20);
 		
 		JTextArea campoCadena=new JTextArea();
-		campoCadena.setBounds(420, 100, 300, 200);
+		campoCadena.setBounds(300, 100, 600, 200);
 		app.add(campoCadena);
 		app.add(resultado);
 		
 		JButton enviar=new JButton("Identificar");
-		enviar.setBounds(620, 350, 100, 40);
+		enviar.setBounds(550, 350, 100, 40);
 		enviar.addActionListener(new ActionListener(){
 			
 			@Override
@@ -133,6 +144,7 @@ public class Ventana extends JFrame {
 				resultado.setText(" ");
 				//mostar cadena
 				cadena = campoCadena.getText()+' ';
+				cadena=cadena.replaceAll("[\n\r]"," ");
 				cadenaArray = cadena.split("");
 				
 				for(int i =0;i<cadenaArray.length;i++) {
@@ -143,12 +155,12 @@ public class Ventana extends JFrame {
 				//
 				if(cadena.isEmpty()) {
 					resultado.setText("Campo Vacío");
-				}else if(cadenaArray.length>50) {
-					resultado.setText("Longitud de cadena superior a 50");
+				
 				}else {
 					Scanner();
 					Validar();
 					app.repaint();
+					tablaCreada=true;
 				}
 				
 			}
@@ -156,8 +168,31 @@ public class Ventana extends JFrame {
 		});
 		app.add(enviar);
 		
+		JButton MostrarTablas=new JButton("Tablas");
+		MostrarTablas.setBounds(750, 350, 100, 40);
+		app.add(MostrarTablas);
+		MostrarTablas.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(tablaCreada==true) {
+				
+				Jtable_lexico mostrarTablaLexica= new Jtable_lexico();
+				Jtable_identificadores mostrarTablaId= new Jtable_identificadores();
+				Jtable_Constantes mostrarTablaConstantes= new Jtable_Constantes();}
+				else {
+					resultado.setText("No existen tablas");
+				}
+				}
+			
+		});
+		app.repaint();
+		
+		
+	
 		JButton limpiar=new JButton("Limpiar");
-		limpiar.setBounds(420, 350, 100, 40);
+		limpiar.setBounds(350, 350, 100, 40);
 		app.add(limpiar);
 		limpiar.addActionListener(new ActionListener() {
 
@@ -168,6 +203,7 @@ public class Ventana extends JFrame {
 				id=100;
 				constante=200;
 				No=1;
+				linea=1;
 			}
 			
 		});
@@ -224,6 +260,7 @@ fin modo aguila*/
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Ventana v= new Ventana();
+		
 		}
 
 	
@@ -240,6 +277,7 @@ public void Scanner() {
 			
 			if(aux==' ') {
 				lex="";
+				linea++;
 			}else if(aux!=' ' || cont<tam){
 				elementArray[elemento] = lex;
 				elemento++;
@@ -287,7 +325,7 @@ Reglas 300
 			String Linea=String.valueOf(linea);
 			Salida(Numero,Linea,"+","7","70");
 			
-		}else if(elementArray[vueltas].equals("-")) {
+		}else if(elementArray[vueltas].equals("-") || (elementArray[vueltas].equals("–"))) {
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
 			Salida(Numero,Linea,"-","7","71");
@@ -354,7 +392,7 @@ Reglas 300
 			 +/- 9
 			 cualquiera 10
 			 */
-			if(flagExpo==false&&(car=='a' ||car=='b'||car=='c'||car=='d'||car=='e'||car=='f'||car=='g'||car=='h'||car=='i'||car=='j'||car=='k'||car=='m'||car=='n'||car=='l'||car=='o'||car=='p'||car=='q'||car=='r'||car=='s'||car=='u'||car=='t'||car=='w'||car=='x'||car=='y'||car=='z')) {
+			if(flagExpo==false&&(car=='a' ||car=='b'||car=='c'||car=='d'||car=='e'||car=='f'||car=='g'||car=='h'||car=='i'||car=='j'||car=='k'||car=='m'||car=='n'||car=='l'||car=='o'||car=='p'||car=='q'||car=='r'||car=='s'||car=='u' ||car=='v'||car=='t'||car=='w'||car=='x'||car=='y'||car=='z')) {
 				
 			carMatriz=0;
 			
@@ -373,7 +411,7 @@ Reglas 300
 				carMatriz=7;
 			}else if(car=='e') {
 				carMatriz=8;
-			}else if(car=='+'||car=='-') {
+			}else if(car=='+'||car=='-' || car=='-') {
 				carMatriz=9;
 			}else{
 				carMatriz=10;
@@ -417,18 +455,18 @@ Reglas 300
 			constante=constante+1;
 			SalidaConst(elementArray[vueltas],consta,Linea);
 			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+		}else if(estado==20){
+			String Numero=String.valueOf(No);
+			String Linea=String.valueOf(linea);
+			String consta=String.valueOf(constante+1);
+			String novalido=elementArray[vueltas];
+			resultado.setText("Error 101 en la linea: "+Linea+" simbolo desconocido, "+novalido+" no es válida");
 		}else if(estado==19){
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
 			String consta=String.valueOf(constante+1);
 			String novalido=elementArray[vueltas];
-			resultado.setText("Error en la linea: "+Linea+" "+novalido+" no es válida");
-		}else {
-			String Numero=String.valueOf(No);
-			String Linea=String.valueOf(linea);
-			String consta=String.valueOf(constante+1);
-			String novalido=elementArray[vueltas];
-			resultado.setText("Error en la linea: "+Linea+" "+novalido+" no es válida");
+			resultado.setText("Error 102 en la linea: "+Linea+" elemento invalido, "+novalido+" no es válida");
 		}
 		flagExpo=false;
 		flagCorreo=false;
@@ -447,7 +485,8 @@ Reglas 300
         
    
         System.out.println("Identificador "+arrayObjetosid[0].getToken()+" "+"Valor: "+ arrayObjetosid[0].getValor()+" "+"linea: "+arrayObjetosid[0].getLinea());
-        
+        DefaultTableModel modelo3 = (DefaultTableModel) tablaId.getModel();
+        modelo3.addRow(new Object[] {arrayObjetosid[0].getToken(), arrayObjetosid[0].getValor(), arrayObjetosid[0].getLinea()});
 	
 	}
 	public class tablaSalidaId{
@@ -490,7 +529,8 @@ Reglas 300
         
    
         System.out.println("Constante "+arrayObjetosConst[0].getToken()+" "+"Valor: "+ arrayObjetosConst[0].getValor()+" "+"linea: "+arrayObjetosConst[0].getLinea());
-        
+        DefaultTableModel modelo2 = (DefaultTableModel) tablaConst.getModel();
+        modelo2.addRow(new Object[] {arrayObjetosConst[0].getToken(), arrayObjetosConst[0].getValor(), arrayObjetosConst[0].getLinea()});
 	}
 	public class tablaSalidaConst{
 		private String token;
@@ -531,10 +571,11 @@ Reglas 300
  
         //Creamos objetos en cada posicion
         arrayObjetos[0]=new Tabla(No, linea, token, tipo,codigo);
-        
-   
+       
+       
+        DefaultTableModel modelo1 = (DefaultTableModel) tablaLexica.getModel();
         System.out.println("No. "+arrayObjetos[0].getNo()+" "+"Linea: "+arrayObjetos[0].getLinea()+" "+"Token: "+ arrayObjetos[0].getToken()+" "+"Tipo: "+arrayObjetos[0].getTipo()+" "+"Codigo: "+arrayObjetos[0].getCodigo());
-        
+        modelo1.addRow(new Object[] {arrayObjetos[0].getNo(), arrayObjetos[0].getLinea(), arrayObjetos[0].getToken(),arrayObjetos[0].getTipo(),arrayObjetos[0].getCodigo()});
 	}
 	
 	public class Tabla {
@@ -596,5 +637,78 @@ Reglas 300
 		  
 		}
 	
-
+	public class Jtable_lexico{
+		public JFrame VentanaLex;
+		
+		/* 
+		private String [] cabezera= {"No.","Línea","TOKEN","Tipo","Código"};
+		private String [][] datos= {{"1","Fernando","Castillo","Ecuador"},
+									{"2","Jorge","monteral","mexicano"},
+									{"3","kujo","jotaro","japone"},};
+		*/
+		public Jtable_lexico() {
+			VentanaLex=new JFrame("Tabla Léxica");
+			VentanaLex.setLayout(new FlowLayout());
+			VentanaLex.setSize(800,600);
+			set_table();
+			VentanaLex.setVisible(true);
+		}
+		public void set_table() {
+			
+			JScrollPane JSlex=new JScrollPane(tablaLexica);
+			JSlex.setPreferredSize(new Dimension(400,500));
+			VentanaLex.add(JSlex);
+		}
+	}
+	
+	public class Jtable_identificadores{
+		public JFrame VentanaId;
+		
+		/* 
+		private String [] cabezera= {"No.","Línea","TOKEN","Tipo","Código"};
+		private String [][] datos= {{"1","Fernando","Castillo","Ecuador"},
+									{"2","Jorge","monteral","mexicano"},
+									{"3","kujo","jotaro","japone"},};
+		*/
+		public Jtable_identificadores() {
+			VentanaId=new JFrame("Tabla de identificadores");
+			VentanaId.setLayout(new FlowLayout());
+			VentanaId.setSize(800,600);
+			set_table();
+			VentanaId.setVisible(true);
+		}
+		public void set_table() {
+			
+			JScrollPane JSlex=new JScrollPane(tablaId);
+			JSlex.setPreferredSize(new Dimension(400,500));
+			VentanaId.add(JSlex);
+		}
+	}
+	
+	public class Jtable_Constantes{
+		public JFrame VentanaConst;
+		
+		/* 
+		private String [] cabezera= {"No.","Línea","TOKEN","Tipo","Código"};
+		private String [][] datos= {{"1","Fernando","Castillo","Ecuador"},
+									{"2","Jorge","monteral","mexicano"},
+									{"3","kujo","jotaro","japone"},};
+		*/
+		public Jtable_Constantes() {
+			VentanaConst=new JFrame("Tabla de Constantes");
+			VentanaConst.setLayout(new FlowLayout());
+			VentanaConst.setSize(800,600);
+			set_table();
+			VentanaConst.setVisible(true);
+		}
+		public void set_table() {
+			
+			JScrollPane JSlex=new JScrollPane(tablaConst);
+			JSlex.setPreferredSize(new Dimension(400,500));
+			VentanaConst.add(JSlex);
+		}
+	}
+	
+	
+	
 }
