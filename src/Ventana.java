@@ -39,6 +39,8 @@ public class Ventana extends JFrame {
 	JTable tablaLexica = new JTable(new DefaultTableModel(new Object[]{"No.", "Línea","TOKEN","Tipo","Código"}, 0));
 	JTable tablaId = new JTable(new DefaultTableModel(new Object[]{"Identificadores", "Valor","Linea"}, 0));
 	JTable tablaConst = new JTable(new DefaultTableModel(new Object[]{"Constantes", "Valor","Linea"}, 0));
+	String[] tokenUsado= new String[99];
+	int[] tokenValorUsado= new int[99];
 	boolean fondo=false;
 	JPanel app=new MainPanel();
 	JLabel resultado=new JLabel();
@@ -48,6 +50,7 @@ public class Ventana extends JFrame {
 	String cadena;
 	String campo;
 	String lex="";
+	int contadoridenti=0;
 	char car=' ';
 	boolean tablaCreada=false;
 	boolean flagExpo=false;
@@ -200,6 +203,7 @@ public class Ventana extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				campoCadena.setText("");
+				resultado.setText("");
 				id=100;
 				constante=200;
 				No=1;
@@ -433,34 +437,192 @@ Reglas 300
 		if (estado==1 && flagCorreo==false) {
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
-			String identificador=String.valueOf(id+1);
-			id=id+1;
-			SalidaId(elementArray[vueltas],identificador,Linea);
-			Salida(Numero,Linea,elementArray[vueltas],"1",identificador);
+			int auxId=0;
+			String identificador=String.valueOf(id);
+			boolean existe=false;
+			
+			System.out.println(tokenUsado[0]);
+			System.out.println(elementArray[0]);
+			for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i]) ) {
+					//
+					
+					existe=true;
+					break;
+				}else {
+					existe=false;
+					
+				}
+					
+			}
+			if(existe==true ) {
+				
+				for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i])) {
+					
+					auxId=tokenValorUsado[i];
+					break;
+				}
+				}
+				identificador=String.valueOf(auxId);
+				Salida(Numero,Linea,elementArray[vueltas],"1",identificador);
+				
+			}else {
+				
+				contadoridenti++;
+			
+				id++;
+				
+				identificador=String.valueOf(id);
+				
+				tokenUsado[contadoridenti]=	elementArray[vueltas];
+				tokenValorUsado[contadoridenti]=id;
+				
+				SalidaId(elementArray[vueltas],identificador,Linea);
+				
+				Salida(Numero,Linea,elementArray[vueltas],"1",identificador);
+				
+			}
+			
 		}else if(estado==7){
 		
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
-			String consta=String.valueOf(constante+1);
-			constante=constante+1;
-			SalidaConst(elementArray[vueltas],consta,Linea);
-			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+			String consta=String.valueOf(constante);
+			int auxConst=0;
+			boolean existe=false;
+			for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i]) ) {
+					//
+					
+					existe=true;
+					break;
+				}else {
+					existe=false;
+					
+				}
+					
+			}
+if(existe==true ) {
+				
+				for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i])) {
+					
+					auxConst=tokenValorUsado[i];
+					break;
+				}
+				}
+				consta=String.valueOf(auxConst);
+				Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+				
+			}else {
+				
+				contadoridenti++;
+			
+				constante=constante+1;
+				
+				consta=String.valueOf(constante);
+				
+				tokenUsado[contadoridenti]=	elementArray[vueltas];
+				tokenValorUsado[contadoridenti]=constante;
+				
+				SalidaConst(elementArray[vueltas],consta,Linea);
+				Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+			}
+			
+			
 		}else if(estado==10){
 		
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
-			String consta=String.valueOf(constante+1);
-			constante=constante+1;
-			SalidaConst(elementArray[vueltas],consta,Linea);
-			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+			String consta=String.valueOf(constante);
+			int auxConst=0;
+			boolean existe=false;
+			for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i]) ) {
+					//
+					
+					existe=true;
+					break;
+				}else {
+					existe=false;
+					
+				}
+					
+			}
+if(existe==true ) {
+				
+				for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i])) {
+					
+					auxConst=tokenValorUsado[i];
+					break;
+				}
+				}
+				consta=String.valueOf(auxConst);
+				Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+				
+			}else {
+				
+				contadoridenti++;
+			
+				constante=constante+1;
+				
+				consta=String.valueOf(constante);
+				
+				tokenUsado[contadoridenti]=	elementArray[vueltas];
+				tokenValorUsado[contadoridenti]=constante;
+				
+				SalidaConst(elementArray[vueltas],consta,Linea);
+				Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+			}
+
 		}else if(estado==12 ){
 		
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
-			String consta=String.valueOf(constante+1);
-			constante=constante+1;
-			SalidaConst(elementArray[vueltas],consta,Linea);
-			Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+			String consta=String.valueOf(constante);
+			int auxConst=0;
+			boolean existe=false;
+			for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i]) ) {
+					//
+					
+					existe=true;
+					break;
+				}else {
+					existe=false;
+					
+				}
+					
+			}
+if(existe==true ) {
+				
+				for(int i=0;i<tokenUsado.length;i++) {
+				if(elementArray[vueltas].equals(tokenUsado[i])) {
+					
+					auxConst=tokenValorUsado[i];
+					break;
+				}
+				}
+				consta=String.valueOf(auxConst);
+				Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+				
+			}else {
+				
+				contadoridenti++;
+			
+				constante=constante+1;
+				
+				consta=String.valueOf(constante);
+				
+				tokenUsado[contadoridenti]=	elementArray[vueltas];
+				tokenValorUsado[contadoridenti]=constante;
+				
+				SalidaConst(elementArray[vueltas],consta,Linea);
+				Salida(Numero,Linea,elementArray[vueltas],"2",consta);
+			}
+
 		}else if(estado==20){
 			String Numero=String.valueOf(No);
 			String Linea=String.valueOf(linea);
