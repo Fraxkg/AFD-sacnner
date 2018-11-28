@@ -207,7 +207,9 @@ public class Ventana extends JFrame {
 				id=100;
 				constante=200;
 				No=1;
+				contadoridenti=0;
 				linea=1;
+				vueltas=0;
 				DefaultTableModel model1 = (DefaultTableModel) tablaLexica.getModel();
 				model1.setRowCount(0);
 				DefaultTableModel model2 = (DefaultTableModel) tablaId.getModel();
